@@ -1,96 +1,42 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("@nomicfoundation/hardhat-ignition");
-require("hardhat-revive-node")
-require("dotenv").config();
+require('@nomicfoundation/hardhat-toolbox');
+require('@nomicfoundation/hardhat-ignition');
+require('hardhat-revive-node');
+require('dotenv').config();
 
-const USE_RESOLC = process.env.USE_RESOLC === 'true';
-if (USE_RESOLC) {
-  require("hardhat-resolc");
-}
-
+require('hardhat-resolc');
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.19",
+  solidity: '0.8.19',
   networks: {
     hardhat: {
+      polkavm: false, // Change to true if you want to use the Polkadot VM
+    },
+    ah: {
       polkavm: true,
-      nodeConfig: {
-        nodeBinaryPath: '../../../code/polkadot-sdk/target/release/substrate-node',
-        rpcPort: 8000,
-        dev: true,
-      },
-      adapterConfig: {
-        adapterBinaryPath: '../../../code/polkadot-sdk/target/release/eth-rpc',
-        dev: true,
-      },
-      allowUnlimitedContractSize: true,
+      url: 'https://westend-asset-hub-eth-rpc.polkadot.io',
+      accounts: [process.env.LOCAL_PRIV_KEY],
     },
 
-    polkavm: {
-      gas: "auto",
-      gasPrice: "auto",
-      // hardfork: "london",      
-      polkavm: true,
-      url: 'http://127.0.0.1:8545',
-      accounts: [process.env.LOCAL_PRIV_KEY, process.env.AH_PRIV_KEY],
-      timeout: 1000000,
-      initialBaseFeePerGas: 0,
+    sepolia: {
+      url: 'https://eth-sepolia.public.blastapi.io',
+      accounts: [process.env.LOCAL_PRIV_KEY],
     },
-    ah: { 
-        url: "https://westend-asset-hub-eth-rpc.polkadot.io",
-        accounts: [process.env.AH_PRIV_KEY, process.env.LOCAL_PRIV_KEY],
-     },
 
-     sepolia: {
-      url: "https://eth-sepolia.public.blastapi.io",
+    moonbase: {
+      url: 'https://rpc.api.moonbase.moonbeam.network',
       accounts: [process.env.LOCAL_PRIV_KEY],
-     },
-
-     moonbeam: {
-      url: "https://moonbeam.api.onfinality.io/public",
-      accounts: [process.env.LOCAL_PRIV_KEY],
-     },
+    },
   },
-
-  ...(USE_RESOLC ? {
-    resolc: {
-      version: "1.5.2",
-      compilerSource: "remix",
-      settings: {
-        optimizer: {
-          enabled: false,
-          runs: 600,
-        },
-        evmVersion: "istanbul",
+  resolc: {
+    version: '1.5.2',
+    compilerSource: 'remix',
+    settings: {
+      optimizer: {
+        enabled: false,
+        runs: 600,
       },
-    }
-  } : {})
-
-  // // using remix compiler
-  // resolc: {
-  //   version: "1.5.2",
-  //   compilerSource: "remix",
-  //   settings: {
-  //     optimizer: {
-  //       enabled: false,
-  //       runs: 600,
-  //     },
-  //     evmVersion: "istanbul",
-  //   },
-  // },
-  
-  // using binary compiler
-  // resolc: {
-  //   compilerSource: 'binary',
-  //   settings: {
-  //     optimizer: {
-  //       enabled: true,
-  //       runs: 400,
-  //     },
-  //     evmVersion: 'istanbul',
-  //     compilerPath: '~/.cargo/bin/resolc',
-  //     standardJson: true,
-  //   },
-  // },
+      evmVersion: 'istanbul',
+    },
+  },
 };
