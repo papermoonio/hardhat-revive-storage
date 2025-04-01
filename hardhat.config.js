@@ -10,7 +10,7 @@ module.exports = {
   solidity: '0.8.19',
   networks: {
     hardhat: {
-      polkavm: false, // Change to true if you want to use the Polkadot VM
+      polkavm: true, // Change to true if you want to use the Polkadot VM
     },
     ah: {
       polkavm: true,
