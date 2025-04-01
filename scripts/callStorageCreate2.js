@@ -13,6 +13,10 @@ async function main() {
     `Deployer contract deployed at: ${await deployerContract.getAddress()}`
   );
 
+  console.log(
+    `Creation code for Storage contract ${await deployerContract.getStorageCode()}`
+  );
+
   // Define salt and constructor arg
   const salt = hre.ethers.keccak256(hre.ethers.toUtf8Bytes('my-unique-salt'));
   const initValue = 777;

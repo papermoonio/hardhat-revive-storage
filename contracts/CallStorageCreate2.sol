@@ -41,4 +41,9 @@ contract Deployer {
 
         return address(uint160(uint(hash)));
     }
+
+    function getStorageCode() public pure returns (bytes memory) {
+        return type(Storage).creationCode;
+    }
+    
 }
