@@ -19,6 +19,7 @@ async function main() {
 
   // Define salt and constructor arg
   const salt = hre.ethers.keccak256(hre.ethers.toUtf8Bytes('my-unique-salt'));
+  console.log(`Salt: ${salt}`);
   const initValue = 777;
 
   // Compute predicted address

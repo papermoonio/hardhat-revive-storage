@@ -4,9 +4,37 @@ pragma solidity ^0.8.19;
 import "./Storage.sol";
 
 contract Deployer {
-    event StorageDeployed(address indexed addr);
+    event StorageDeployed(address indexed addr, uint indexed number);
 
-    function deployStorage(bytes32 salt, uint256 initialNumber) public returns (address) {
+    function deployStorage(
+        bytes32 salt,
+        uint256 initialNumber
+    ) public returns (address, uint256) {
+        bytes memory bytecode = abi.encodePacked(
+            type(Storage).creationCode,
+            abi.encode(initialNumber)
+        );
+
+        address storageAddr;
+        assembly {
+            storageAddr := create2(
+                0,
+                add(bytecode, 0x20),
+                mload(bytecode),
+                salt
+            )
+            if iszero(storageAddr) {
+                revert(0, 0)
+            }
+        }
+
+        uint res = Storage(storageAddr).storedNumber();
+
+        emit StorageDeployed(storageAddr, res);
+        return (storageAddr, res);
+    }
+
+    /*function deployStorage(bytes32 salt, uint256 initialNumber) public returns (address) {
         bytes memory bytecode = abi.encodePacked(
             type(Storage).creationCode,
             abi.encode(initialNumber)
@@ -22,7 +50,7 @@ contract Deployer {
 
         emit StorageDeployed(storageAddr);
         return storageAddr;
-    }
+    }*/
 
     function computeAddress(bytes32 salt, uint256 initialNumber) public view returns (address) {
         bytes memory bytecode = abi.encodePacked(
